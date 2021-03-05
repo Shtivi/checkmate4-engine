@@ -38,7 +38,7 @@ app.post('/nextmove', async (req, res) => {
   res.send(bestmove)
 })
 
-const port = process.env.PORT || 4000
+const port = process.env.PORT || 80
 http.listen(port, () => {
   console.log(`Sever listening on *:${port}`)
 })
