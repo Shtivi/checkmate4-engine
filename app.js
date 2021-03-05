@@ -8,19 +8,23 @@ const Stockfish = require('./stockfish')
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*")
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
   next()
 })
 
-app.get('/bestmove', async (req, res) => {
+app.get('/', (req, res) => {
+  res.status(200).json("Hello World")
+})
+
+app.post('/nextmove', async (req, res) => {
   // Initialize new stockfish instance
+  console.log("next move request", req.body)
   const stockfish = new Stockfish()
   stockfish.setupBoard()
 
-  let fen = req.query.fen
-  let difficulty = req.query.difficulty
+  const { fen, difficulty } = req.body
 
   if (!fen) {
     // Get new game board
@@ -34,7 +38,7 @@ app.get('/bestmove', async (req, res) => {
   res.send(bestmove)
 })
 
-const port = process.env.PORT || 3000
+const port = process.env.PORT || 4000
 http.listen(port, () => {
   console.log(`Sever listening on *:${port}`)
 })
