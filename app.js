@@ -27,15 +27,17 @@ app.post('/nextmove', async (req, res) => {
   const { fen, difficulty } = req.body
 
   if (!fen) {
-    // Get new game board
-    fen = chess().fen()
-  } else if (!chess().load(fen)) {
-    // Reject if invalid FEN
-    return res.status(400).send('Invalid FEN')
+    res.status(400).json('missingFen')
+    return
   }
 
-  const bestmove = await stockfish.getBestMove(fen, difficulty)
-  res.send(bestmove)
+  try {
+    const bestmove = await stockfish.getBestMove(fen, difficulty)
+    res.send(bestmove)
+  } catch (ex) {
+    console.error('failed to calculate next move', JSON.stringify(ex))
+    res.status(500).json('failed to calculate next move', JSON.stringify(ex)) 
+  }
 })
 
 const port = process.env.PORT || 80
