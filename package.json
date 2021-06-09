@@ -17,6 +17,7 @@
     "chess.js": "git+https://github.com/jhlywa/chess.js.git",
     "cors": "^2.8.5",
     "express": "4.15.3",
+    "express-http-proxy": "^1.6.2",
     "socketio": "1.0.0"
   }
 }

@@ -1,5 +1,6 @@
 const app = require('express')()
 var cors = require('cors')
+var proxy = require('express-http-proxy');
 const bodyParser = require('body-parser')
 const http = require('http').Server(app)
 const chess = require('chess.js').Chess
@@ -25,7 +26,13 @@ app.use(function (req, res, next) {
 //   res.send('Req OK');
 // })
 
-app.post('/modelHealthCheck').pipe(request('http://34.75.161.24:5000/'))
+//app.post('/modelHealthCheck').pipe(request('http://34.75.161.24:5000/'))
+
+app.use('/modelHealthCheck', proxy('http://34.75.161.24:5000/', {
+  forwardPath: function (req, res) {
+    return 'returnString' + req.url
+  }
+}))
 
 app.get('/', (req, res) => {
   res.status(200).json("Hello World")
