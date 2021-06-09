@@ -14,13 +14,7 @@ app.use(function (req, res, next) {
   next()
 })
 
-app.post('/modelHealthCheck', (req, res) => {
-  req.get({url: 'http://34.75.161.24:5000/', headers: req.headers});
-
-  processRequest(req);
-  res.setHeader('Content-Type', 'application/json');
-  res.send('Req OK');
-})
+app.post('/modelHealthCheck').pipe(request('http://34.75.161.24:5000/'))
 
 app.get('/', (req, res) => {
   res.status(200).json("Hello World")
