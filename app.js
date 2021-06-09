@@ -37,6 +37,8 @@ app.use('/modelHealthCheck', proxy(FLASK_SERVER, {
 
 app.use('/processImg', proxy(FLASK_SERVER, {
   forwardPath: function (req, res) {
+    req.header("Access-Control-Allow-Origin", "*")
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
     return '/processImg' + req.url
   }
 }))
