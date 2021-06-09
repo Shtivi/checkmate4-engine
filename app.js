@@ -16,7 +16,7 @@ app.use(function (req, res, next) {
   next()
 })
 
-app.get('/modelHealthCheck', (req, res) => {
+app.post('/modelHealthCheck', (req, res) => {
   
   req.get({url: 'http://34.75.161.24:5000/', headers: req.headers});
 
