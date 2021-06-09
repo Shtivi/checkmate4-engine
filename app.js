@@ -5,8 +5,12 @@ const bodyParser = require('body-parser')
 const http = require('http').Server(app)
 const chess = require('chess.js').Chess
 const Stockfish = require('./stockfish')
-const FLASK_SERVER = 'http://34.75.161.24:5000/'
-
+const FLASK_SERVER = 'http://34.75.161.24:5000'
+const multer = require('multer');
+const upload = multer();
+const fileUpload = require('express-fileupload');
+const axios = require('axios').default
+const FormData = require('form-data')
 
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
@@ -18,39 +22,28 @@ app.use(function (req, res, next) {
   next()
 })
 
-// app.post('/modelHealthCheck', (req, res) => {
-  
-//   req.get({url: 'http://34.75.161.24:5000/', headers: req.headers});
-
-//   processRequest(req);
-//   res.setHeader('Content-Type', 'application/json');
-//   res.send('Req OK');
-// })
-
-//app.post('/modelHealthCheck').pipe(request('http://34.75.161.24:5000/'))
-
 app.use('/modelHealthCheck', proxy(FLASK_SERVER, {
   forwardPath: function (req, res) {
     return '' + req.url
   }
 }))
 
-app.use('/processImg', proxy(FLASK_SERVER, {
-  proxyReqOptDecorator: function(proxyReqOpts, srcReq) {
-    proxyReqOpts.headers['Access-Control-Allow-Origin'] = '*';
-    proxyReqOpts.headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept';
-  
-    return '/processImg' + proxyReqOpts;
-  },
-  // forwardPath: function (req, res) {
-  //   req.header("Access-Control-Allow-Origin", "*")
-  //   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
-  //   return '/processImg' + req.url
-  // },
-  proxyErrorHandler: function(err, res, next) {
-    next(err);
-  }
-}))
+app.post('/processImg', upload.single('image'), async (req, res) => {
+  const image = req.file
+
+  const formData = new FormData()
+  formData.append('image', image.buffer, image.originalname)
+
+  const result = await axios.post(FLASK_SERVER + '/processImg', formData, { 
+    headers: {
+      'Content-Type': `multipart/form-data; boundary=${formData._boundary}`
+    } 
+  })
+
+  console.log('image processing result:', result.data)
+
+  res.status(200).json(result.data)
+})
 
 app.get('/', (req, res) => {
   res.status(200).json("Hello World")
