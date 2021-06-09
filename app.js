@@ -5,6 +5,7 @@ const bodyParser = require('body-parser')
 const http = require('http').Server(app)
 const chess = require('chess.js').Chess
 const Stockfish = require('./stockfish')
+const FLASK_SERVER = 'http://34.75.161.24:5000/'
 
 
 app.use(bodyParser.json()); // support json encoded bodies
@@ -28,9 +29,15 @@ app.use(function (req, res, next) {
 
 //app.post('/modelHealthCheck').pipe(request('http://34.75.161.24:5000/'))
 
-app.use('/modelHealthCheck', proxy('http://34.75.161.24:5000/', {
+app.use('/modelHealthCheck', proxy(FLASK_SERVER, {
   forwardPath: function (req, res) {
     return '' + req.url
+  }
+}))
+
+app.use('/processImg', proxy(FLASK_SERVER, {
+  forwardPath: function (req, res) {
+    return '/processImg' + req.url
   }
 }))
 
