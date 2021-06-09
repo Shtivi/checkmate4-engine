@@ -45,6 +45,7 @@ app.post('/processImg', upload.single('image'), async (req, res) => {
 
     res.status(200).json(result.data)
   } catch(ex) {
+    console.error(ex)
     res.status(500).json({message: 'failed to handle request', ex})
   }
 })
