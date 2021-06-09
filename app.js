@@ -1,4 +1,5 @@
 const app = require('express')()
+var cors = require('cors')
 const bodyParser = require('body-parser')
 const http = require('http').Server(app)
 const chess = require('chess.js').Chess
@@ -7,6 +8,7 @@ const Stockfish = require('./stockfish')
 
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
+app.use(cors())
 
 app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*")
@@ -14,7 +16,7 @@ app.use(function (req, res, next) {
   next()
 })
 
-app.post('/modelHealthCheck').pipe(request('http://34.75.161.24:5000/'))
+app.get('/modelHealthCheck').pipe(request('http://34.75.161.24:5000/'))
 
 app.get('/', (req, res) => {
   res.status(200).json("Hello World")
