@@ -36,10 +36,19 @@ app.use('/modelHealthCheck', proxy(FLASK_SERVER, {
 }))
 
 app.use('/processImg', proxy(FLASK_SERVER, {
-  forwardPath: function (req, res) {
-    req.header("Access-Control-Allow-Origin", "*")
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
-    return '/processImg' + req.url
+  proxyReqOptDecorator: function(proxyReqOpts, srcReq) {
+    proxyReqOpts.headers['Access-Control-Allow-Origin'] = '*';
+    proxyReqOpts.headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept';
+  
+    return '/processImg' + proxyReqOpts;
+  },
+  // forwardPath: function (req, res) {
+  //   req.header("Access-Control-Allow-Origin", "*")
+  //   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
+  //   return '/processImg' + req.url
+  // },
+  proxyErrorHandler: function(err, res, next) {
+    next(err);
   }
 }))
 
