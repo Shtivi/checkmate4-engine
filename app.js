@@ -16,7 +16,14 @@ app.use(function (req, res, next) {
   next()
 })
 
-app.get('/modelHealthCheck').pipe(request('http://34.75.161.24:5000/'))
+app.get('/modelHealthCheck', (req, res) => {
+  
+  req.get({url: 'http://34.75.161.24:5000/', headers: req.headers});
+
+  processRequest(req);
+  res.setHeader('Content-Type', 'application/json');
+  res.send('Req OK');
+})//.pipe(request('http://34.75.161.24:5000/')).pipe(res)
 
 app.get('/', (req, res) => {
   res.status(200).json("Hello World")
