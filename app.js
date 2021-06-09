@@ -30,7 +30,7 @@ app.use(function (req, res, next) {
 
 app.use('/modelHealthCheck', proxy('http://34.75.161.24:5000/', {
   forwardPath: function (req, res) {
-    return 'returnString' + req.url
+    return '' + req.url
   }
 }))
 
