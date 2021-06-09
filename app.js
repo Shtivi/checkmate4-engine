@@ -29,20 +29,24 @@ app.use('/modelHealthCheck', proxy(FLASK_SERVER, {
 }))
 
 app.post('/processImg', upload.single('image'), async (req, res) => {
-  const image = req.file
+  try {
+    const image = req.file
 
-  const formData = new FormData()
-  formData.append('image', image.buffer, image.originalname)
+    const formData = new FormData()
+    formData.append('image', image.buffer, image.originalname)
 
-  const result = await axios.post(FLASK_SERVER + '/processImg', formData, { 
-    headers: {
-      'Content-Type': `multipart/form-data; boundary=${formData._boundary}`
-    } 
-  })
+    const result = await axios.post(FLASK_SERVER + '/processImg', formData, {
+      headers: {
+        'Content-Type': `multipart/form-data; boundary=${formData._boundary}`
+      }
+    })
 
-  console.log('image processing result:', result.data)
+    console.log('image processing result:', result.data)
 
-  res.status(200).json(result.data)
+    res.status(200).json(result.data)
+  } catch(ex) {
+    res.status(500).json({message: 'failed to handle request', ex})
+  }
 })
 
 app.get('/', (req, res) => {
@@ -67,7 +71,7 @@ app.post('/nextmove', async (req, res) => {
     res.send(bestmove)
   } catch (ex) {
     console.error('failed to calculate next move', JSON.stringify(ex))
-    res.status(500).json('failed to calculate next move', JSON.stringify(ex)) 
+    res.status(500).json('failed to calculate next move', JSON.stringify(ex))
   }
 })
 
