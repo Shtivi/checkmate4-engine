@@ -22,6 +22,10 @@ app.use(function (req, res, next) {
   next()
 })
 
+app.use((req, res, next) => {
+  console.log(req.method, req.path, req.body)
+})
+
 app.use('/modelHealthCheck', proxy(FLASK_SERVER, {
   forwardPath: function (req, res) {
     return '' + req.url
