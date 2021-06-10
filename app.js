@@ -30,6 +30,7 @@ app.use('/modelHealthCheck', proxy(FLASK_SERVER, {
 
 app.post('/processImg', upload.single('image'), async (req, res) => {
   try {
+    req.setTimeout(120 * 1000)
     const image = req.file
 
     const formData = new FormData()
