@@ -39,7 +39,8 @@ app.post('/processImg', upload.single('image'), async (req, res) => {
     const result = await axios.post(FLASK_SERVER + '/processImg', formData, {
       headers: {
         'Content-Type': `multipart/form-data; boundary=${formData._boundary}`
-      }
+      },
+      timeout: 120000
     })
 
     console.log('image processing result:', result.data)
